@@ -3,11 +3,14 @@ import GameCard from "@/components/GameCard";
 export default function GamesPage() {
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Games</h1>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <GameCard title="Coin Flip" href="/games/coinflip" description="Pick heads or tails & set your wager." />
-        <GameCard title="Dice" href="/games/dice" description="Guess 1–6. Exact hit pays 5x." />
-        <GameCard title="Slots" href="/games/slots" description="3x3 reels, small chance of big-ish demo win." />
+      <header className="card">
+        <h1 className="text-2xl font-bold">Games</h1>
+        <p className="text-white/70">Wager demo credits on simple games of chance.</p>
+      </header>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <GameCard title="Coin Flip" href="/games/coinflip" emoji="🪙" desc="Heads or tails — double or nothing." />
+        <GameCard title="Dice" href="/games/dice" emoji="🎲" desc="Roll high to win the pot." />
+        <GameCard title="Slots" href="/games/slots" emoji="🎰" desc="Line up symbols for prizes." />
       </div>
     </div>
   );

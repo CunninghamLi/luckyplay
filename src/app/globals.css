@@ -2,8 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Base polish */
 :root { color-scheme: dark; }
 * { box-sizing: border-box; }
-html, body { margin:0; padding:0; }
-a { color: inherit; text-decoration: none; }
-button { cursor: pointer; }
+html, body { margin: 0; padding: 0; }
+
+/* Smooth focus outlines */
+@layer base {
+  :focus-visible {
+    @apply outline-none ring-2 ring-sky-500 ring-offset-2 ring-offset-black;
+  }
+}
+/* Reusable cards & buttons */
+@layer components {
+  .card {
+    @apply rounded-2xl border border-white/10 bg-neutral-900/60 backdrop-blur p-5 shadow-soft;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center rounded-xl px-4 py-2 font-medium transition;
+  }
+  .btn-primary {
+    @apply btn bg-white text-black hover:bg-neutral-200;
+  }
+  .btn-outline {
+    @apply btn border border-white/20 bg-transparent text-white hover:bg-white/10;
+  }
+  .btn-ghost {
+    @apply btn text-white/80 hover:text-white hover:bg-white/5;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-xs text-white/80;
+  }
+}
