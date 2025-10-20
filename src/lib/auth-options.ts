@@ -9,7 +9,7 @@ export const authOptions: NextAuthOptions = {
       name: "Email & Password",
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         const email = (credentials?.email || "").trim().toLowerCase();
@@ -22,23 +22,29 @@ export const authOptions: NextAuthOptions = {
         const ok = await bcrypt.compare(password, user.passwordHash);
         if (!ok) return null;
 
-        // ensure wallet exists
+        // Ensure wallet exists
         await prisma.wallet.upsert({
           where: { userId: user.id },
           update: {},
-          create: { userId: user.id, credits: 0 }
+          create: { userId: user.id, credits: 0 },
         });
 
         return { id: user.id, email: user.email!, name: user.name ?? "" };
-      }
-    })
+      },
+    }),
   ],
+
+  pages: {
+    signIn: "/auth/signin", 
+  },
+
   session: { strategy: "jwt" },
   secret: process.env.NEXTAUTH_SECRET,
+
   callbacks: {
     async session({ session, token }) {
       if (session.user && token?.sub) (session.user as any).id = token.sub;
       return session;
-    }
-  }
+    },
+  },
 };

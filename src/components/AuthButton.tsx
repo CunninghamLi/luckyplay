@@ -23,12 +23,9 @@ export default function AuthButton({ variant = "outline" }: Props) {
   if (status === "authenticated") {
     return (
       <button
-        onClick={async () => {
-          await signOut({ redirect: false });
-          router.refresh();
-        }}
-        className={clsx(base, styles[variant])}
-      >
+  onClick={() => signOut({ callbackUrl: "/" })} // NextAuth clears cookie then redirects
+  className="rounded-md px-4 py-2"
+>
         Sign out
       </button>
     );
