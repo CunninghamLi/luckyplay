@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth-options";
 import Link from "next/link";
+import FaucetClaimButton from "@/components/FaucetClaimButton"; // 👈 add this
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -24,9 +25,11 @@ export default async function DashboardPage() {
       <div className="grid gap-6 md:grid-cols-3">
         <div className="card md:col-span-1">
           <div className="text-sm text-white/60">Balance</div>
-          <div className="mt-2 text-4xl font-bold">{credits.toLocaleString()} <span className="text-white/60 text-xl">credits</span></div>
+          <div className="mt-2 text-4xl font-bold">
+            {credits.toLocaleString()} <span className="text-white/60 text-xl">credits</span>
+          </div>
           <div className="mt-4 flex gap-2">
-            <Link href="/api/credits/faucet" className="btn-ghost">Claim Faucet</Link>
+            <FaucetClaimButton /> {/* 👈 was a Link before */}
             <Link href="/games" className="btn-primary">Play Games</Link>
           </div>
         </div>
