@@ -2,7 +2,7 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import SessionWrapper from "@/components/SessionWrapper";
-import Footer from "@/components/Footer"; // optional: create if you want a footer
+import Footer from "@/components/Footer";
 import { Inter } from "next/font/google";
 import type { Metadata, Viewport } from "next";
 
@@ -11,7 +11,11 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "sw
 export const metadata: Metadata = {
   title: "LuckyPlay",
   description: "Luck-based mini games with demo credits — no payments.",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/luckyplaylogo.png",
+  },
   openGraph: {
     title: "LuckyPlay",
     description: "Luck-based mini games with demo credits — no payments.",
@@ -27,6 +31,7 @@ export const metadata: Metadata = {
     images: ["/luckyplaylogo.png"],
   },
 };
+
 
 export const viewport: Viewport = {
   themeColor: "#0ea5e9",
