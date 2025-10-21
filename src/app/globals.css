@@ -2,35 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Base polish */
+/* Dark radial gradient background + subtle grid */
 :root { color-scheme: dark; }
-* { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; }
 
-/* Smooth focus outlines */
-@layer base {
-  :focus-visible {
-    @apply outline-none ring-2 ring-sky-500 ring-offset-2 ring-offset-black;
-  }
+html, body {
+  height: 100%;
+  margin: 0;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, #0ea5e922 0%, transparent 60%),
+    radial-gradient(1000px 500px at 110% -20%, #22d3ee22 0%, transparent 60%),
+    radial-gradient(800px 300px at 50% 140%, #0ea5e91a 0%, transparent 60%),
+    #0a0a0a;
+  color: #fff;
 }
-/* Reusable cards & buttons */
+
+/* Glassy cards + shadows */
 @layer components {
   .card {
-    @apply rounded-2xl border border-white/10 bg-neutral-900/60 backdrop-blur p-5 shadow-soft;
+    @apply rounded-2xl border border-white/10 bg-neutral-900/60 backdrop-blur p-5 shadow-[0_10px_30px_rgba(0,0,0,.35)];
   }
   .btn {
-    @apply inline-flex items-center justify-center rounded-xl px-4 py-2 font-medium transition;
+    @apply inline-flex items-center gap-2 rounded-xl px-4 py-2 font-medium transition active:scale-[.98];
   }
   .btn-primary {
     @apply btn bg-white text-black hover:bg-neutral-200;
   }
-  .btn-outline {
-    @apply btn border border-white/20 bg-transparent text-white hover:bg-white/10;
-  }
   .btn-ghost {
-    @apply btn text-white/80 hover:text-white hover:bg-white/5;
+    @apply btn bg-white/10 text-white hover:bg-white/20;
   }
-  .badge {
-    @apply inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-xs text-white/80;
+  .tag {
+    @apply inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-xs text-white/80 border border-white/10;
   }
+}
+
+/* Nice section container */
+.container-page {
+  @apply mx-auto w-full max-w-6xl px-4 md:px-6 lg:px-8;
 }

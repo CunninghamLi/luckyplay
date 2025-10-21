@@ -1,37 +1,39 @@
-"use client";
-
-import AuthButton from "@/components/AuthButton";
 import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <div className="space-y-6">
-      <h1 className="text-4xl font-bold">LuckyPlay</h1>
-      <p className="text-neutral-300 max-w-2xl">
-        Welcome to LuckyPlay, play luck-based mini games!
-        <br />
-        <em>No real money, no payment processors.</em>
-      </p>
+    <>
+      <section className="py-14">
+        <div className="max-w-3xl">
+          <span className="tag">Demo credits only</span>
+          <h1 className="mt-4 text-4xl md:text-5xl font-bold tracking-tight">
+            Welcome to <span className="text-white/90">LuckyPlay</span>
+          </h1>
+          <p className="mt-4 text-white/70 leading-relaxed">
+            Play short, luck-based mini games. Sign up, claim your faucet, place small bets,
+            and track your results — all with demo credits.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link href="/games" className="btn-primary">Browse Games</Link>
+            <Link href="/dashboard" className="btn-ghost">Go to Dashboard</Link>
+          </div>
+        </div>
+      </section>
 
-      <div className="flex gap-3">
-        <AuthButton variant="primary" />
-        <Link
-          href="/games"
-          className="rounded-md border border-neutral-700 px-4 py-2 hover:bg-neutral-800"
-        >
-          Browse Games
-        </Link>
-      </div>
-
-      <div className="rounded-lg border border-neutral-800 p-4">
-        <h2 className="text-xl font-semibold mb-2">How it works</h2>
-        <ol className="list-decimal pl-6 space-y-1 text-neutral-300">
-          <li>Create an account.</li>
-          <li>Claim a one-time faucet to get a starting 500 credits.</li>
-          <li>Place small bets on the games.</li>
-          <li>All results are RNG-backed and recorded in your history.</li>
-        </ol>
-      </div>
-    </div>
+      <section className="grid gap-6 md:grid-cols-3">
+        <div className="card">
+          <h3 className="font-semibold text-lg">🎲 Coin Flip</h3>
+          <p className="text-sm text-white/70 mt-2">50/50 odds. Pick a side and place your wager.</p>
+        </div>
+        <div className="card">
+          <h3 className="font-semibold text-lg">🎯 Dice</h3>
+          <p className="text-sm text-white/70 mt-2">Bet high/low or pick exact numbers for bigger payout.</p>
+        </div>
+        <div className="card">
+          <h3 className="font-semibold text-lg">🎰 Slots</h3>
+          <p className="text-sm text-white/70 mt-2">Spin the reels — multiplier wins possible.</p>
+        </div>
+      </section>
+    </>
   );
 }
