@@ -17,27 +17,31 @@ export default function SignInForm({
   error?: string;
 }) {
   const [msg, setMsg] = useState<string | null>(null);
-  const errorBoxRef = useRef<HTMLDivElement | null>(null);
+  const alertRef = useRef<HTMLDivElement | null>(null);
 
-  // show server-provided error (?error=...) on first render
+  // Show error from ?error=... when redirected back by NextAuth
   useEffect(() => {
     if (error) setMsg(MESSAGES[error] || MESSAGES.default);
   }, [error]);
 
+  useEffect(() => {
+    if (msg && alertRef.current) alertRef.current.focus();
+  }, [msg]);
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    const email = String(fd.get("email") || "");
+    const email = String(fd.get("email") || "").trim().toLowerCase();
     const password = String(fd.get("password") || "");
-    // Let NextAuth handle cookie + redirect
-    await signIn("credentials", { email, password, callbackUrl, redirect: true });
-    // If credentials are wrong, NextAuth will redirect back here with ?error=CredentialsSignin
-  }
 
-  // auto-focus error for accessibility
-  useEffect(() => {
-    if (msg && errorBoxRef.current) errorBoxRef.current.focus();
-  }, [msg]);
+    await signIn("credentials", {
+      email,
+      password,
+      callbackUrl,
+      redirect: true, // set cookie then navigate
+    });
+    // If wrong, NextAuth redirects back to /auth/signin?error=CredentialsSignin
+  }
 
   return (
     <div className="max-w-sm mx-auto space-y-4 py-8">
@@ -45,7 +49,7 @@ export default function SignInForm({
 
       {msg && (
         <div
-          ref={errorBoxRef}
+          ref={alertRef}
           tabIndex={-1}
           role="alert"
           aria-live="assertive"
@@ -70,7 +74,9 @@ export default function SignInForm({
           placeholder="********"
           required
         />
-        <button className="w-full rounded-md bg-white text-black px-4 py-2">Sign in</button>
+        <button className="w-full rounded-md bg-white text-black px-4 py-2">
+          Sign in
+        </button>
       </form>
 
       <p className="text-sm text-neutral-400 text-center">
