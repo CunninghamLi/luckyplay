@@ -3,8 +3,9 @@ import SignInForm from "./SignInForm";
 export default function SignInPage({
   searchParams,
 }: {
-  searchParams: { callbackUrl?: string };
+  searchParams: { callbackUrl?: string; error?: string };
 }) {
   const callbackUrl = searchParams?.callbackUrl ?? "/dashboard";
-  return <SignInForm callbackUrl={callbackUrl} />;
+  const error = searchParams?.error ?? "";
+  return <SignInForm callbackUrl={callbackUrl} error={error} />;
 }
