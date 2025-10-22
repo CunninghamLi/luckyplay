@@ -35,7 +35,7 @@ export default function BetForm({
         className="rounded-md bg-neutral-900 border border-neutral-700 p-2 w-32"
       />
       {extraFields}
-      <button type="submit" className="rounded-md bg-white text-black px-4 py-2">Bet</button>
+      
     </form>
   );
 }

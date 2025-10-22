@@ -59,3 +59,20 @@ html, body {
 @media (prefers-reduced-motion: reduce) {
   .anim-coin, .anim-dice, .anim-reel { animation: none !important; }
 }
+
+/* --- LuckyPlay dice animation --- */
+@keyframes dice-bounce {
+  0%   { transform: translateY(0) rotate(0deg); }
+  20%  { transform: translateY(-20px) rotate(15deg); }
+  40%  { transform: translateY(0) rotate(-10deg); }
+  60%  { transform: translateY(-10px) rotate(8deg); }
+  80%  { transform: translateY(0) rotate(-5deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+@keyframes dice-spin {
+  0%   { transform: rotate(0deg);   }
+  100% { transform: rotate(720deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .anim-dice { animation: none !important; }
+}
