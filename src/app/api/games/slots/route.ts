@@ -1,38 +1,98 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { getAuthedUser } from "@/lib/auth-guards";
-import { resolveSlots } from "@/lib/game-logic/slots";
 
-const bodySchema = z.object({ bet: z.number().int().min(1) });
+const SYMBOLS = ["🍒","🍋","🔔","⭐","💎","7️⃣"] as const;
+type Sym = typeof SYMBOLS[number];
+
+function spin(): Sym[] {
+  const pick = () => SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
+  return [pick(), pick(), pick()];
+}
+
+/**
+ * Returns:
+ *  - totalReturn: credits returned to player (for storage in `payout`)
+ *  - netDelta: wallet increment/decrement (applied via credits increment)
+ *  - kind: "three" | "two" | "none"
+ */
+function scoring(result: Sym[], bet: number) {
+  const [a, b, c] = result;
+  let totalReturn = 0;
+  let kind: "three" | "two" | "none" = "none";
+
+  if (a === b && b === c) {
+    // 7x total return
+    totalReturn = bet * 7;
+    kind = "three";
+  } else if (a === b || a === c || b === c) {
+    // refund (1x total return)
+    totalReturn = bet;
+    kind = "two";
+  } else {
+    totalReturn = 0;
+    kind = "none";
+  }
+
+  // We apply: first subtract bet, then add totalReturn.
+  // So wallet net change:
+  const netDelta = totalReturn - bet; // +6×bet (three), 0 (two), -bet (none)
+  const win = netDelta > 0;
+
+  return { totalReturn, netDelta, win, kind };
+}
 
 export async function POST(req: Request) {
   const { user, prisma } = await getAuthedUser();
-  const json = await req.json().catch(() => ({}));
-  const parsed = bodySchema.safeParse({ ...json, bet: Number(json.bet) });
-  if (!parsed.success) return NextResponse.json({ error: "Invalid input" }, { status: 400 });
+  const body = await req.json().catch(() => ({}));
+  const bet = Math.max(1, Number(body.bet || 1));
 
-  const { bet } = parsed.data;
   const wallet = await prisma.wallet.findUnique({ where: { userId: user.id } });
-  if (!wallet || wallet.credits < bet) return NextResponse.json({ error: "Insufficient credits" }, { status: 400 });
+  if (!wallet || wallet.credits < bet) {
+    return NextResponse.json({ message: "Insufficient credits." }, { status: 400 });
+  }
 
-  const outcome = resolveSlots();
-  const payout = outcome.payoutMultiplier * bet;
+  const symbols = spin();
+  const { totalReturn, netDelta, win, kind } = scoring(symbols, bet);
 
   await prisma.$transaction(async (tx) => {
-    await tx.wallet.update({ where: { userId: user.id }, data: { credits: { decrement: bet } } });
-    if (payout > 0) await tx.wallet.update({ where: { userId: user.id }, data: { credits: { increment: payout } } });
+    // Record bet (store totalReturn in payout to stay consistent with your other routes)
     await tx.bet.create({
       data: {
         userId: user.id,
         game: "SLOTS",
         wager: bet,
-        outcome: outcome.reels.join(""),
-        payout
-      }
+        outcome: symbols.join(" "),
+        payout: totalReturn, // total returned on win/refund; 0 on loss
+      },
+    });
+
+    // Apply credits
+    await tx.wallet.update({
+      where: { userId: user.id },
+      data: { credits: { increment: netDelta } },
     });
   });
 
+  // Compose human-readable message
+  const reels = symbols.join(" ");
+  let message = `Reels: ${reels}. `;
+  if (kind === "three") {
+    message += `You won ${bet * 6} credits!`; // profit amount
+  } else if (kind === "two") {
+    message += `Two of a kind — bet refunded.`;
+  } else {
+    message += `You lost.`;
+  }
+
   return NextResponse.json({
-    message: `Reels: ${outcome.reels.join(" | ")}. ${payout > 0 ? `You won ${payout - bet}!` : "You lost."}`
+    symbols,     // authoritative order for UI
+    win,
+    netDelta,    // +profit / -loss
+    payout: totalReturn, // total returned (for reference)
+    message,
   });
+}
+
+export function GET() {
+  return NextResponse.json({ message: "POST to spin the slots." }, { status: 405 });
 }
