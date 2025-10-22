@@ -22,11 +22,11 @@ export default function HomePage() {
 
       <section className="grid gap-6 md:grid-cols-3">
         <div className="card">
-          <h3 className="font-semibold text-lg">🎲 Coin Flip</h3>
+          <h3 className="font-semibold text-lg">🪙 Coin Flip</h3>
           <p className="text-sm text-white/70 mt-2">50/50 odds. Pick a side and place your wager.</p>
         </div>
         <div className="card">
-          <h3 className="font-semibold text-lg">🎯 Dice</h3>
+          <h3 className="font-semibold text-lg">🎲 Dice</h3>
           <p className="text-sm text-white/70 mt-2">Bet high/low or pick exact numbers for bigger payout.</p>
         </div>
         <div className="card">
